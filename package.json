@@ -1,0 +1,17 @@
+{
+  "name": "eyepfs",
+  "module": "./src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun --hot ./src/index.ts",
+    "start-ipfs": "/bin/bash ./ipfs.sh",
+    "start-ipfs:gateway": "/bin/bash ./ipfs-gateway.sh",
+    "fmt": "dprint fmt --config='./dprint.json'"
+  },
+  "devDependencies": {
+    "bun-types": "^0.7.3",
+    "dprint": "^0.40.2",
+    "typescript": "^5.1.6",
+    "bun": "^0.7.3"
+  }
+}
