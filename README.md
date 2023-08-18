@@ -53,6 +53,6 @@ curl --location --request GET \
 
 anywhere that can run a **`Dockerfile`** 🐳
 
-[**`Railway.app`**](https://railway.app/) happens to be the best option
+[**`Railway.app`**](https://railway.app/) happens to be one of the best option
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/PhPjgz?referralCode=eD4laT)
