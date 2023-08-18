@@ -1,3 +1,23 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Build `Dockerfile` and run container (recommended)  #
+
+build-all:
+	docker buildx build . \
+		--progress 'plain' \
+		--file 'Dockerfile' \
+		--tag 'my_ipfs_gateway_proxy'
+
+run-all:
+	docker run --rm -it \
+		--name 'my_ipfs_gateway_proxy' \
+		--env IPFS_GATEWAY_HOST="http://127.0.0.1:8081" \
+		--publish '3031:3031' \
+		'my_ipfs_gateway_proxy'
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+# Run services individually (See `Readme.md` for more) 			#
+# You can ignore these if you're running the above commands #
+
 start-ipfs-host:
 	docker run \
 		-it \

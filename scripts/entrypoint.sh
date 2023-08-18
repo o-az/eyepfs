@@ -12,5 +12,4 @@ sleep 5.73
 
 echo "IPFS Gateway is ready!"
 
-~/.bun/bin/bun install &&
-  ~/.bun/bin/bun run --hot ./index.ts
+~/.bun/bin/bun run --hot ./index.ts
