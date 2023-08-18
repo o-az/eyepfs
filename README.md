@@ -33,7 +33,7 @@ Run the image you just built:
 
 ```sh
 docker run --rm -it \
-  --name 'my_ipfs_gateway_proxy' \
+  --name 'ipfs_gateway_proxy' \
   --env IPFS_GATEWAY_HOST="http://127.0.0.1:8081" \
   --publish '3031:3031' \
   'ipfs_gateway_proxy'
