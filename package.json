@@ -16,7 +16,7 @@
     "bun": "^0.7.3"
   },
   "dependencies": {},
-  "license": "GPL-v3-or-later",
+  "license": "GPL-3.0-or-later",
   "version": "0.0.1",
   "repository": "github:o-az/eyepfs",
   "bugs": "github:o-az/eyepfs/issues"
