@@ -71,6 +71,9 @@ bun start-proxy
 # this runs `./src/index.ts` which starts the proxy server
 ```
 
-## Deployment:
+## Deployment
 
 anywhere that can run a `Dockerfile` 🐳
+[**`Railway.app`**](https://railway.app/) happens to be the best option
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/PhPjgz?referralCode=eD4laT)
