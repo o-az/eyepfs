@@ -1,4 +1,5 @@
-FROM golang:bullseye
+ARG PLATFORM=amd64
+FROM --platform=${PLATFORM} golang:bullseye
 
 ENV NODE_ENV="production"
 

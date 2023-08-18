@@ -7,6 +7,7 @@
     "start-ipfs": "make start-ipfs-host",
     "start-ipfs:gateway": "make start-ipfs-gateway",
     "start-proxy": "bun --hot ./src/index.ts",
+    "railway-deploy": "RAILWAY_DOCKERFILE_PATH='Dockerfile' railway up --service 'api' --detach --environment 'production'",
     "fmt": "dprint fmt --config='./dprint.json'"
   },
   "devDependencies": {

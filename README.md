@@ -23,7 +23,7 @@ git clone https://github.com/o-az/eyepfs.git
 - Run everything through `Dockerfile` (recommended),
 - Run each service individually
 
-### Run everything through `Dockerfile`:
+### Run everything through `Dockerfile`
 
 Build `Dockerfile`:
 
@@ -51,9 +51,10 @@ curl --location --request GET \
   --url 'http://127.0.0.1:3031/bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi' \
   --output 'image.jpeg'
 ```
+
 ____
 
-### Run each service individually:
+### Run each service individually
 
 ```sh
 bun start-ipfs
