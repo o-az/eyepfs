@@ -1,4 +1,6 @@
 {
+  "useTabs": false,
+  "lineWidth": 100,
   "json": {},
   "markdown": {},
   "dockerfile": {},

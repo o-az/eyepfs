@@ -56,3 +56,10 @@ anywhere that can run a **`Dockerfile`** 🐳
 [**`Railway.app`**](https://railway.app/) happens to be one of the best option
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/PhPjgz?referralCode=eD4laT)
+
+## Upcoming Features
+
+- [ ] Use multi-stage build in `Dockerfile` and use `alpine` as base image
+- [ ] (**CI**) workflow publish image to Docker Hub & GitHub Container Registry
+- [ ] (**CI**) Generate a simple performance report on push
+- [ ] Got any ideas? [Let's chat](https://github.com/o-az/eyepfs/issues/new)
