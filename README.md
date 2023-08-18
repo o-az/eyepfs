@@ -57,12 +57,12 @@ ____
 
 ```sh
 bun start-ipfs
-# this runs the script in `Makefile` start-ipfs-host
+# this runs `start-ipfs-host` in `Makefile`
 ```
 
 ```sh
 bun start-ipfs:gateway
-# this runs the script in `Makefile` start-ipfs-gateway
+# this runs `start-ipfs-gateway` in `Makefile`
 ```
 
 ```sh
