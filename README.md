@@ -1,14 +1,14 @@
 # Hosted IPFS Gateway & HTTP Proxy
 
-### Uses
+## Uses
 
 - [ipfs/kubo](https://github.com/ipfs/kubo)
 - [bifrost-gateway](https://github.com/ipfs/bifrost-gateway)
 - [bun](https://bun.sh/)
 
-### Purpose
+## Purpose
 
-Overcome public IPFS gateway limitations such as [429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429) by hosting your own.
+Overcome public IPFS gateway limitations, such as [429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429), by hosting your own IPFS Gateway and HTTP Proxy.
 
 ![429 Example](https://github-production-user-asset-6210df.s3.amazonaws.com/23618431/261382276-f08af99b-fad0-4076-afbf-91d41b428147.png)
 
@@ -20,10 +20,10 @@ git clone https://github.com/o-az/eyepfs.git
 
 **You have two options to run this:**
 
-- Run everything through `Dockerfile`,
+- Run everything through `Dockerfile` (recommended),
 - Run each service individually
 
-#### Run all in Docker
+### Run everything through `Dockerfile`:
 
 Build `Dockerfile`:
 
@@ -51,8 +51,9 @@ curl --location --request GET \
   --url 'http://127.0.0.1:3031/bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi' \
   --output 'image.jpeg'
 ```
+____
 
-#### Run each service individually
+### Run each service individually:
 
 ```sh
 bun start-ipfs
@@ -68,3 +69,7 @@ bun start-ipfs:gateway
 bun start-proxy
 # this runs `./src/index.ts` which starts the proxy server
 ```
+
+## Deployment:
+
+anywhere that can run a `Dockerfile` 🐳
