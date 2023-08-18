@@ -1,11 +1,12 @@
 {
   "name": "eyepfs",
+  "description": "Hosted IPFS Gateway & HTTP Proxy",
   "module": "./src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun --hot ./src/index.ts",
-    "start-ipfs": "/bin/bash ./ipfs.sh",
-    "start-ipfs:gateway": "/bin/bash ./ipfs-gateway.sh",
+    "start-ipfs": "make start-ipfs-host",
+    "start-ipfs:gateway": "make start-ipfs-gateway",
+    "start-proxy": "bun --hot ./src/index.ts",
     "fmt": "dprint fmt --config='./dprint.json'"
   },
   "devDependencies": {
@@ -13,5 +14,10 @@
     "dprint": "^0.40.2",
     "typescript": "^5.1.6",
     "bun": "^0.7.3"
-  }
+  },
+  "dependencies": {},
+  "license": "GPL-v3-or-later",
+  "version": "0.0.1",
+  "repository": "github:o-az/eyepfs",
+  "bugs": "github:o-az/eyepfs/issues"
 }

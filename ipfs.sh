@@ -2,18 +2,26 @@
 
 set -euo pipefail
 
-# https://docs.ipfs.tech/install/run-ipfs-inside-docker/
+# https://docs.ipfs.tech/install/command-line/#install-official-binary-distributions
 
-docker run \
-  -it \
-  --rm \
-  --detach \
-  --name ipfs_host \
-  --label ipfs_host \
-  --volume ipfs_export:/export \
-  --volume ipfs_data:/data/ipfs \
-  --publish 4001:4001 \
-  --publish 4001:4001/udp \
-  --publish 127.0.0.1:8080:8080 \
-  --publish 127.0.0.1:5001:5001 \
-  ipfs/kubo:latest
+BINARY_URL=$(curl --silent 'https://api.github.com/repos/ipfs/kubo/releases/latest' | grep 'browser_download_url' | grep 'linux-arm64.tar.gz' | head --lines 1 | cut -d '"' -f 4)
+
+curl --location \
+  --request 'GET' \
+  --output 'kubo-source.tar.gz' \
+  --url "${BINARY_URL}"
+
+tar --extract \
+  --verbose \
+  --gzip \
+  --file 'kubo-source.tar.gz'
+
+cd 'kubo'
+
+sudo bash './install.sh'
+
+ipfs --version
+
+ipfs init
+
+ipfs daemon
