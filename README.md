@@ -59,7 +59,9 @@ anywhere that can run a **`Dockerfile`** 🐳
 
 ## Upcoming Features
 
+- [ ] `CORS` configuration - allow setting origind through env variables
 - [ ] Use multi-stage build in `Dockerfile` and use `alpine` as base image
+- [ ] Setup rate limiter,
 - [ ] (**CI**) workflow publish image to Docker Hub & GitHub Container Registry
 - [ ] (**CI**) Generate a simple performance report on push
 - [ ] Got any ideas? [Let's chat](https://github.com/o-az/eyepfs/issues/new)
