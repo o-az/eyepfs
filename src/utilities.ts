@@ -17,6 +17,6 @@ export function isPossiblyCID(possibleCID?: string) {
 }
 
 export function raise(error: unknown): never {
-  console.error("raise", error)
-  raise(typeof error === "string" ? error : JSON.stringify(error, undefined, 2))
+  console.error('raise', error)
+  raise(typeof error === 'string' ? error : JSON.stringify(error, undefined, 2))
 }

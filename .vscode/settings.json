@@ -1,23 +1,17 @@
 {
+  "deno.enable": true,
+  "deno.path": "/opt/homebrew/bin/deno",
   "search.exclude": {
-    "**/node_modules": true
+    "**/node_modules": true,
+    "deno.lock": true,
+    "**/dist": true
   },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "dprint.path": "node_modules/.bin/dprint",
-  "dprint.verbose": true,
-  "editor.defaultFormatter": "dprint.dprint",
   "editor.formatOnSave": true,
+  "editor.defaultFormatter": "denoland.vscode-deno",
   "[typescript]": {
-    "editor.defaultFormatter": "dprint.dprint"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "dprint.dprint"
+    "editor.defaultFormatter": "denoland.vscode-deno"
   },
   "[json]": {
-    "editor.defaultFormatter": "dprint.dprint"
-  },
-  "[yaml]": {
-    "editor.defaultFormatter": "dprint.dprint"
+    "editor.defaultFormatter": "denoland.vscode-deno"
   }
 }

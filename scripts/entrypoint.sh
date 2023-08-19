@@ -1,15 +1,28 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -euo pipefail
+IPFS_GATEWAY_HOST="${IPFS_GATEWAY_HOST:-http://127.0.0.1:8081}"
+PROXY_GATEWAY_URL="${PROXY_GATEWAY_URL:-http://127.0.0.1:8080}"
 
-/bin/bash ipfs.sh &
+[ -z "${IPFS_GATEWAY_HOST}" ] && echo "IPFS_GATEWAY_HOST is required" && exit 1
+[ -z "${PROXY_GATEWAY_URL}" ] && echo "PROXY_GATEWAY_URL is required" && exit 1
+
+echo "Starting IPFS Gateway..."
+
+ipfs init
+
+ipfs daemon &
 
 sleep 2.69
 
-/bin/bash ipfs-gateway.sh &
+bifrost-gateway --help
 
-sleep 5.73
+bifrost-gateway &
+
+sleep 3
 
 echo "IPFS Gateway is ready!"
+echo "Starting Deno server..."
 
-~/.bun/bin/bun run --hot ./index.ts
+IPFS_GATEWAY_HOST="${IPFS_GATEWAY_HOST}" /usr/local/bin/deno run --allow-all --unstable /app/index.ts
+
+tail -f /dev/null

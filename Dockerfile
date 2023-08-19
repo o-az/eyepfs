@@ -1,34 +1,27 @@
-ARG PLATFORM=amd64
-FROM --platform=${PLATFORM} golang:bullseye
+ARG DENO_VERSION=1.36.1
+FROM denoland/deno:bin-${DENO_VERSION} AS deno_bin
 
-ENV NODE_ENV="production"
+FROM ipfs/kubo:latest AS kubo_binary
+FROM ipfs/bifrost-gateway:latest AS bifrost_binary
+
+FROM debian:stable-slim AS final
 
 ENV PORT="3031"
+ENV ENV="production"
+ENV IPFS_GATEWAY_HOST="http://127.0.0.1:8081"
+ENV PROXY_GATEWAY_URL="http://127.0.0.1:8080"
 
-ARG IPFS_GATEWAY_URL
-ENV IPFS_GATEWAY_URL=${IPFS_GATEWAY_URL}
+# copy ipfs/kubo
+COPY --from=kubo_binary /usr/local/bin/ipfs /usr/local/bin/ipfs
+# # copy ipfs/bifrost-gateway
+COPY --from=bifrost_binary /usr/local/bin/bifrost-gateway /usr/local/bin/bifrost-gateway
+# # copy deno binary
+COPY --from=deno_bin /deno /usr/local/bin/deno
 
-ARG IPFS_GATEWAY_HOST
-ENV IPFS_GATEWAY_HOST=${IPFS_GATEWAY_HOST}
+WORKDIR /app
 
-SHELL [ "/bin/bash", "-o", "pipefail", "-c" ]
+COPY ./scripts/entrypoint.sh ./src/* /app/
 
-WORKDIR /usr/src/app
+RUN chmod +x /app/entrypoint.sh
 
-RUN apt-get --yes update && \
-  export DEBIAN_FRONTEND='noninteractive' && \
-  apt-get --yes upgrade && \
-  apt-get --yes install --no-install-recommends \
-  sudo \
-  unzip && \
-  curl -fsSL https://bun.sh/install | bash && \
-  source ~/.bashrc && \
-  apt-get --yes autoremove && \
-  apt-get --yes clean && \
-  rm -rf /var/lib/apt/lists/*
-
-COPY ./scripts/entrypoint.sh ./ipfs.sh ./ipfs-gateway.sh ./src/* /usr/src/app/
-
-RUN chmod +x /usr/src/app/*.sh
-
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]

@@ -2,9 +2,9 @@
 
 ## Uses
 
-- [ipfs/kubo](https://github.com/ipfs/kubo)
-- [bifrost-gateway](https://github.com/ipfs/bifrost-gateway)
-- [bun](https://bun.sh/)
+- [Kubo](https://github.com/ipfs/kubo) - An IPFS implementation in Go
+- [bifrost-gateway](https://github.com/ipfs/bifrost-gateway) - A lightweight IPFS Gateway daemon backed by a remote data store
+- [Deno](https://deno.land/) - gud JS runtime
 
 ## Purpose
 
@@ -18,15 +18,20 @@ Overcome public IPFS gateway limitations, such as [429 Too Many Requests](https:
 git clone https://github.com/o-az/eyepfs.git
 ```
 
-Build `Dockerfile`:
+Install [**`Deno`**](https://deno.land/manual@v1.36.1/getting_started/installation#download-and-install)
+
+<https://deno.land/manual/getting_started/installation#download-and-install>
+
+Build **`Dockerfile`**:
 
 ```sh
 docker buildx build . \
   --progress 'plain' \
   --file 'Dockerfile' \
-  --tag 'ipfs_gateway_proxy'
+  --tag 'ipfs_gateway_proxy' \
+  --platform 'linux/amd64'
 
-# or `bun docker:build`
+# or `deno task docker:build`
 ```
 
 Run the image you just built:
@@ -34,11 +39,18 @@ Run the image you just built:
 ```sh
 docker run --rm -it \
   --name 'ipfs_gateway_proxy' \
-  --env IPFS_GATEWAY_HOST="http://127.0.0.1:8081" \
+  --env IPFS_GATEWAY_HOST='http://127.0.0.1:8081' \
   --publish '3031:3031' \
-  'ipfs_gateway_proxy'
+  'ipfs_gateway_proxy' \
+  --platform 'linux/amd64'
 
-# or `bun docker:run`
+# or `deno task docker:run`
+```
+
+Run `Deno` HTTP server (the proxy):
+
+```sh
+deno task dev
 ```
 
 Give it a nice few seconds then smoke test (fetch image):
@@ -60,8 +72,7 @@ anywhere that can run a **`Dockerfile`** 🐳
 ## Upcoming Features
 
 - [ ] `CORS` configuration - allow setting origind through env variables
-- [ ] Use multi-stage build in `Dockerfile` and use `alpine` as base image
-- [ ] Setup rate limiter,
+- [ ] Setup rate limiter (allow whitelist through env variables),
 - [ ] (**CI**) workflow publish image to Docker Hub & GitHub Container Registry
 - [ ] (**CI**) Generate a simple performance report on push
 - [ ] Got any ideas? [Let's chat](https://github.com/o-az/eyepfs/issues/new)

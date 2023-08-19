@@ -1,9 +1,11 @@
 interface EnvironmentVariables {
-  readonly NODE_ENV: "development" | "production" | "test"
+  readonly ENV: 'development' | 'production' | 'test'
   readonly PORT: string
   readonly IPFS_GATEWAY_HOST: string
 }
 
-declare module "bun" {
-  interface Env extends EnvironmentVariables {}
+declare namespace Deno {
+  interface Env {
+    get(key: keyof EnvironmentVariables): string | undefined
+  }
 }
