@@ -1,8 +1,8 @@
 {
   "tasks": {
-    "dev": "IPFS_GATEWAY_HOST='http://127.0.0.1:8081' deno run --unstable --allow-all --watch ./src/index.ts",
+    "dev": "IPFS_GATEWAY_HOST='http://127.0.0.1:8080' deno run --unstable --allow-all --watch ./src/index.ts",
     "docker:build": "docker buildx build . --progress 'plain' --file 'Dockerfile' --tag 'ipfs_gateway_proxy' --platform 'linux/amd64'",
-    "docker:run": "docker run --rm -it --name 'ipfs_gateway_proxy' --env IPFS_GATEWAY_HOST='http://127.0.0.1:8081' --publish '3031:3031' 'ipfs_gateway_proxy' --platform 'linux/amd64'",
+    "docker:run": "docker run --rm -it --name 'ipfs_gateway_proxy' --env IPFS_GATEWAY_HOST='http://127.0.0.1:8080' --publish '3031:3031' 'ipfs_gateway_proxy' --platform 'linux/amd64'",
     "deploy": "RAILWAY_DOCKERFILE_PATH='Dockerfile' railway up --service 'api' --detach --environment 'production'",
     "lint": "deno lint --unstable . src",
     "fmt": "deno fmt --unstable . src",

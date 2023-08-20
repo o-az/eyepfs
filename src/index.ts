@@ -3,19 +3,6 @@ import { isPossiblyCID, isURL } from './utilities.ts'
 const IPFS_GATEWAY_HOST = Deno.env.get('IPFS_GATEWAY_HOST')
 if (!IPFS_GATEWAY_HOST) throw new Error('IPFS_GATEWAY_HOST environment variable not set')
 
-Deno.serve(
-  {
-    port: Number(Deno.env.get('PORT')) || 3031,
-    onError: (error) => {
-      console.error(error)
-      return new Response(error instanceof Error ? error.message : `Unknown error: ${error}`, {
-        status: 500,
-      })
-    },
-  },
-  handler,
-)
-
 async function handler(request: Request) {
   const { pathname, search } = new URL(request.url)
 
@@ -37,3 +24,16 @@ async function handler(request: Request) {
 
   return fetch(ipfsURL)
 }
+
+Deno.serve(
+  {
+    port: Number(Deno.env.get('PORT')) || 3031,
+    onError: (error) => {
+      console.error(error)
+      return new Response(error instanceof Error ? error.message : `Unknown error: ${error}`, {
+        status: 500,
+      })
+    },
+  },
+  handler,
+)
