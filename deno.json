@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "IPFS_GATEWAY_HOST='http://127.0.0.1:8080' deno run --unstable --allow-all --watch ./src/index.ts",
+    "dev": "IPFS_GATEWAY_HOST='http://127.0.0.1:8080' ALLOW_ORIGINS='127.0.0.1,eyepfs.railway.app,tokens.evn.workers.dev' deno run --unstable --allow-all --watch ./src/index.ts",
     "docker:build": "docker buildx build . --progress 'plain' --file 'Dockerfile' --tag 'ipfs_gateway_proxy' --platform 'linux/amd64'",
     "docker:run": "docker run --rm -it --name 'ipfs_gateway_proxy' --env IPFS_GATEWAY_HOST='http://127.0.0.1:8080' --env ALLOW_ORIGINS='http://127.0.0.1,https://eyepfs.railway.app,https://tokens.evn.workers.dev' --publish '3031:3031' 'ipfs_gateway_proxy' --platform 'linux/amd64'",
     "deploy": "RAILWAY_DOCKERFILE_PATH='Dockerfile' railway up --service 'api' --detach --environment 'production'",

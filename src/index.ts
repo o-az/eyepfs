@@ -7,14 +7,13 @@ async function handler(request: Request, info: Deno.ServeHandlerInfo): Promise<R
   const headers = new Headers(request.headers)
   headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS, HEAD')
   headers.set('Access-Control-Allow-Headers', 'Content-Type')
-  
+
   const { hostname: identifier } = info.remoteAddr ?? 'anonymous'
 
-  const origin = headers.get('Origin')
-  const allowedOrigins = Deno.env.get('ALLOWED_ORIGINS')?.split(',') ?? []
+  const allowOrigins = Deno.env.get('ALLOW_ORIGINS')?.split(',') ?? []
 
-  if (!allowedOrigins.includes(identifier)) {
-    return new Response(`Origin ${origin} not allowed`, { status: 403, headers })
+  if (!allowOrigins.includes(identifier)) {
+    return new Response(`Origin not allowed`, { status: 403, headers })
   }
 
   if (request.method === 'OPTIONS') {
