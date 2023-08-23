@@ -3,7 +3,7 @@
 ## Uses
 
 - [**Kubo**](https://github.com/ipfs/kubo) - IPFS implementation in Go
-- [**Deno**](https://deno.land/) JavaScript runtime
+- [**Go**](https://golang.org/) - Programming language
 
 ## Purpose
 
