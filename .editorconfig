@@ -4,10 +4,10 @@ root = true
 end_of_line = lf
 insert_final_newline = true
 
-[*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,d.ts,json,md}]
+[*.{json,md,go,sh}]
 charset = utf-8
 indent_size = 2
-indent_style = space
+indent_style = tab
 max_line_length = 100
 trim_trailing_whitespace = true
 

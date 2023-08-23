@@ -12,8 +12,8 @@ ipfs daemon &
 sleep 3
 
 echo "IPFS Gateway is ready!"
-echo "Starting Deno server..."
+echo "Starting go server..."
 
-IPFS_GATEWAY_HOST="${IPFS_GATEWAY_HOST}" /usr/local/bin/deno run --allow-all --unstable /app/index.ts
+/app/proxy_app
 
 tail -f /dev/null

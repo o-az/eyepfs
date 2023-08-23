@@ -1,20 +1,24 @@
-ARG DENO_VERSION=1.36.1
-FROM denoland/deno:bin-${DENO_VERSION} AS deno_bin
-
 FROM ipfs/kubo:latest AS kubo_binary
+FROM golang:latest AS go_builder
 
-FROM debian:stable-slim AS final
+WORKDIR /app
+
+COPY ./go.mod ./go.sum ./main.go /app/
+
+RUN go build -o proxy_app
+
+FROM busybox:glibc
 
 ENV PORT="3031"
 ENV ENV="production"
 ENV IPFS_GATEWAY_HOST="http://127.0.0.1:8080"
 
-COPY --from=kubo_binary /usr/local/bin/ipfs /usr/local/bin/ipfs
-COPY --from=deno_bin /deno /usr/local/bin/deno
-
 WORKDIR /app
 
-COPY ./scripts/entrypoint.sh ./src/* /app/
+COPY --from=kubo_binary /usr/local/bin/ipfs /usr/local/bin/ipfs
+COPY --from=go_builder /app/proxy_app /app/proxy_app
+
+COPY ./scripts/entrypoint.sh /app/
 
 RUN chmod +x /app/entrypoint.sh
 

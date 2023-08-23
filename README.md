@@ -17,16 +17,6 @@ Overcome public IPFS gateway limitations, such as [429 Too Many Requests](https:
 git clone https://github.com/o-az/eyepfs.git
 ```
 
-#### Install **`Deno`**
-
-```sh
-curl -fsSL https://deno.land/x/install/install.sh | sh
-```
-
-<sup> _**note**: if you're using `vscode`, replace `"deno.path"` in `.vscode/settings.json` with the path to your `deno` installation_</sup>
-
-Other install options: <https://deno.land/manual/getting_started/installation#download-and-install>
-
 #### Build **`Dockerfile`**
 
 ```sh
@@ -36,7 +26,7 @@ docker buildx build . \
   --tag 'ipfs_gateway_proxy' \
   --platform 'linux/amd64'
 
-# or `deno task docker:build`
+# or `make docker-build`
 ```
 
 #### Run the image you just built
@@ -51,7 +41,7 @@ docker run --rm \
   'ipfs_gateway_proxy' \
   --platform 'linux/amd64'
 
-# or `deno task docker:run`
+# or `make docker-run`
 ```
 
 #### Run a quick test
