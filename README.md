@@ -1,10 +1,5 @@
 # Hosted IPFS Gateway & HTTP Proxy
 
-## Uses
-
-- [**Kubo**](https://github.com/ipfs/kubo) - IPFS implementation in Go
-- [**Go**](https://golang.org/) - Programming language
-
 ## Purpose
 
 Overcome public IPFS gateway limitations, such as [429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429), by hosting your own IPFS Gateway and HTTP Proxy.
@@ -23,8 +18,8 @@ git clone https://github.com/o-az/eyepfs.git
 docker buildx build . \
   --progress 'plain' \
   --file 'Dockerfile' \
-  --tag 'ipfs_gateway_proxy' \
-  --platform 'linux/amd64'
+  --platform 'linux/amd64' \
+  --tag 'ipfs_gateway_proxy'
 
 # or `make docker-build`
 ```
@@ -32,14 +27,15 @@ docker buildx build . \
 #### Run the image you just built
 
 ```sh
-docker run --rm \
+docker run \
+  --rm \
   -it \
-  --detach \
   --name 'ipfs_gateway_proxy' \
   --env IPFS_GATEWAY_HOST='http://127.0.0.1:8080' \
+  --env ALLOW_ORIGINS='*' \
   --publish '3031:3031' \
-  'ipfs_gateway_proxy' \
-  --platform 'linux/amd64'
+  --platform 'linux/amd64' \
+  'ipfs_gateway_proxy'
 
 # or `make docker-run`
 ```
@@ -59,13 +55,35 @@ curl --location --request GET \
   stat '/tmp/ipfs_proxy_image.jpeg'
 ```
 
+Restricting access to your gateway is as simple as setting `ALLOW_ORIGINS` to a comma separated list of allowed origins. Example:
+
+```sh
+docker run \
+  --rm \
+  -it \
+  --name 'ipfs_gateway_proxy' \
+  --env IPFS_GATEWAY_HOST='http://127.0.0.1:8080' \
+  --env ALLOW_ORIGINS='http://example.com,http://example.org' \
+  --publish '3031:3031' \
+  'ipfs_gateway_proxy'
+```
+
 ## Deployment
 
 anywhere that can run a **`Dockerfile`** 🐳
 
-[**`Railway.app`**](https://railway.app/) happens to be one of the best option
+[**`Railway.app`**](https://railway.app/)
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/PhPjgz?referralCode=eD4laT)
+```sh
+RAILWAY_DOCKERFILE_PATH=Dockerfile railway up --service 'api' --detach --environment 'production'
+```
+
+[**`fly.io`**](https://fly.io/)
+
+```sh
+fly deploy --app='ipfs_gateway' --dockerfile Dockerfile --remote-only --detach --build-arg PORT=3031 --env IPFS_PROFILE='server' --env IPFS_GATEWAY_HOST='http://127.0.0.1:8080' --env ALLOW_ORIGINS='*'
+```
+
 
 ## Upcoming Features
 

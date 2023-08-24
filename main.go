@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -32,12 +33,12 @@ func main() {
 
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Route does not exist"))
+		_, _ = w.Write([]byte("Route does not exist"))
 	})
 
 	router.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		w.Write([]byte("Method not allowed"))
+		_, _ = w.Write([]byte("Method not allowed"))
 	})
 
 	router.Get("/*", handleRequest)
@@ -46,29 +47,36 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	http.ListenAndServe(":3031", router)
+	var port = envPortOr("3031")
+
+	log.Fatal(http.ListenAndServe(port, router))
 }
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
 	ipAddress, err := getIP(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(fmt.Sprintf("Failed to get IP address: %s", err)))
+		_, _ = w.Write([]byte(fmt.Sprintf("Failed to get IP address: %s", err)))
 		return
 	}
 
 	allowOrigins, _ := os.LookupEnv("ALLOW_ORIGINS")
 
+	// if allowOrigins is set to * then allow all origins
+	if allowOrigins == "*" {
+		allowOrigins = ipAddress
+	}
+
 	if !strings.Contains(allowOrigins, ipAddress) {
 		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte(fmt.Sprintf("IP address %s is not allowed to access this resource", ipAddress)))
+		_, _ = w.Write([]byte(fmt.Sprintf("IP address %s is not allowed to access this resource", ipAddress)))
 		return
 	}
 
 	cid := path.Base(r.URL.Path)
 	if !isPossiblyCID(cid) {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(fmt.Sprintf("Invalid pathname: %s", r.URL.Path)))
+		_, _ = w.Write([]byte(fmt.Sprintf("Invalid pathname: %s", r.URL.Path)))
 		return
 	}
 	ipfsGatewayHost, _ := os.LookupEnv("IPFS_GATEWAY_HOST")
@@ -77,18 +85,13 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.Get(ipfsURL)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(fmt.Sprintf("Failed to fetch IPFS URL: %s", ipfsURL)))
+		_, _ = w.Write([]byte(fmt.Sprintf("Failed to fetch IPFS URL: %s", ipfsURL)))
 		return
 	}
 
 	defer resp.Body.Close()
 
-	io.Copy(w, resp.Body)
-}
-
-func isPossiblyCID(possibleCID string) bool {
-	cidRegex := regexp.MustCompile(`Qm[1-9A-HJ-NP-Za-km-z]{44,}|b[A-Za-z2-7]{58,}|B[A-Z2-7]{58,}|z[1-9A-HJ-NP-Za-km-z]{48,}|F[0-9A-F]{50,}`)
-	return cidRegex.MatchString(possibleCID)
+	_, _ = io.Copy(w, resp.Body)
 }
 
 func getIP(r *http.Request) (string, error) {
@@ -101,6 +104,7 @@ func getIP(r *http.Request) (string, error) {
 	ips := r.Header.Get("X-FORWARDED-FOR")
 	splitIps := strings.Split(ips, ",")
 	for _, ip := range splitIps {
+		ip := strings.TrimSpace(ip)
 		netIP := net.ParseIP(ip)
 		if netIP != nil {
 			return ip, nil
@@ -116,4 +120,17 @@ func getIP(r *http.Request) (string, error) {
 		return ip, nil
 	}
 	return "", fmt.Errorf("no valid ip found")
+}
+
+func envPortOr(port string) string {
+  // If `PORT` variable in environment exists, return it
+  if envPort := os.Getenv("PORT"); envPort != "" {
+    return ":" + envPort
+  }
+  return ":" + port
+}
+
+func isPossiblyCID(possibleCID string) bool {
+	cidRegex := regexp.MustCompile(`Qm[1-9A-HJ-NP-Za-km-z]{44,}|b[A-Za-z2-7]{58,}|B[A-Z2-7]{58,}|z[1-9A-HJ-NP-Za-km-z]{48,}|F[0-9A-F]{50,}`)
+	return cidRegex.MatchString(possibleCID)
 }

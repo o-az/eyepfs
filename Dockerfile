@@ -7,11 +7,13 @@ COPY ./go.mod ./go.sum ./main.go /app/
 
 RUN go build -o proxy_app
 
-FROM busybox:glibc
+FROM amd64/alpine:latest
 
 ENV PORT="3031"
 ENV ENV="production"
 ENV IPFS_GATEWAY_HOST="http://127.0.0.1:8080"
+
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
