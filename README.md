@@ -84,13 +84,11 @@ RAILWAY_DOCKERFILE_PATH=Dockerfile railway up --service 'api' --detach --environ
 fly deploy --app='ipfs_gateway' --dockerfile Dockerfile --remote-only --detach --build-arg PORT=3031 --env IPFS_PROFILE='server' --env IPFS_GATEWAY_HOST='http://127.0.0.1:8080' --env ALLOW_ORIGINS='*'
 ```
 
-
 ## Upcoming Features
 
-- [ ] 🔨 (`CORS`) configuration,
-- [ ] 🔨 Setup rate limiter,
-- [ ] (`Kubo`) disable all methods but `GET` and `HEAD`,
-- [ ] 🔨 (`Kubo`) set `Swarm#ConnMgr#Type` to `"none"` (disable all swarm connections),
+- [x] 🔨 (`CORS`) configuration,
+- [x] (`Kubo`) disable all methods but `GET` and `HEAD`, and `OPTIONS` for CORS,
+- [x] (`Kubo`) set `Swarm#ConnMgr#Type` to `"none"` (disable all swarm connections),
 - [ ] (`CI`) workflow publish image to Docker Hub & GitHub Container Registry,
 - [ ] (`CI`) Generate a simple performance report on push,
 - [ ] Got any ideas? [Let's chat](https://github.com/o-az/eyepfs/issues/new)

@@ -12,8 +12,16 @@ ipfs daemon &
 sleep 3
 
 echo "IPFS Gateway is ready!"
+
+ipfs config Swarm.ConnMgr.Type "none"
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin "[\"${ALLOW_ORIGINS}\"]"
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods "[\"HEAD\", \"GET\", \"OPTIONS\"]"
+
+ipfs config --json show
+
 echo "Starting go server..."
 
 /app/proxy_app
 
 tail -f /dev/null
+
