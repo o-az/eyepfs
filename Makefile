@@ -17,7 +17,7 @@ docker-run:
 		--platform 'linux/amd64' \
 		'ipfs_gateway_proxy'
 
-fly-deploy:
+railway-deploy:
 	RAILWAY_DOCKERFILE_PATH='Dockerfile' railway up --service 'api' --detach --environment 'production'
 
 generate-key:
