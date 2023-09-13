@@ -7,8 +7,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"path"
-	"regexp"
 	"strings"
 
 	"github.com/go-chi/chi/v5"
@@ -24,6 +22,12 @@ func main() {
 	_, allowOriginsEnvVariableExists := os.LookupEnv("ALLOW_ORIGINS")
 	if !allowOriginsEnvVariableExists {
 		fmt.Println("Error: ALLOW_ORIGINS environment variable not set")
+		os.Exit(1)
+	}
+
+	_, apiKeyEnvVariableExists := os.LookupEnv("API_KEY")
+	if !apiKeyEnvVariableExists {
+		fmt.Println("Error: API_KEY environment variable not set")
 		os.Exit(1)
 	}
 
@@ -53,6 +57,23 @@ func main() {
 }
 
 func handleRequest(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+
+	// if no auth header is set or auth header is empty, return unauthorized
+	if authHeader == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte("Unauthorized"))
+		return
+	}
+
+	API_KEY, _ := os.LookupEnv("API_KEY")
+
+	if authHeader != API_KEY {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = w.Write([]byte("Unauthorized"))
+		return
+	}
+
 	ipAddress, err := getIP(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -72,16 +93,25 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write([]byte(fmt.Sprintf("IP address %s is not allowed to access this resource", ipAddress)))
 		return
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	cid := path.Base(r.URL.Path)
-	if !isPossiblyCID(cid) {
-		w.WriteHeader(http.StatusBadRequest)
-		_, _ = w.Write([]byte(fmt.Sprintf("Invalid pathname: %s", r.URL.Path)))
-		return
+	var cidAndFilePath string
+	if strings.Contains(r.URL.Path, "/ipfs/") {
+		splitPath := strings.SplitN(r.URL.Path, "/ipfs/", 2)
+		if len(splitPath) < 2 {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = w.Write([]byte(fmt.Sprintf("Invalid pathname: %s", r.URL.Path)))
+			return
+		}
+		cidAndFilePath = splitPath[1]
+	} else {
+		cidAndFilePath = strings.TrimPrefix(r.URL.Path, "/")
 	}
+
 	ipfsGatewayHost, _ := os.LookupEnv("IPFS_GATEWAY_HOST")
 
-	ipfsURL := fmt.Sprintf("%s/ipfs/%s", ipfsGatewayHost, cid)
+	ipfsURL := fmt.Sprintf("%s/ipfs/%s", ipfsGatewayHost, cidAndFilePath)
+
 	resp, err := http.Get(ipfsURL)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -90,6 +120,27 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer resp.Body.Close()
+
+	buffer := make([]byte, 512)
+	_, err = resp.Body.Read(buffer)
+	if err != nil && err != io.EOF {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = w.Write([]byte(fmt.Sprintf("Failed to read IPFS response: %s", err)))
+		return
+	}
+
+	// Detect the content type
+	contentType := http.DetectContentType(buffer)
+
+	// If the content type is text/html but the content starts with <svg, it's probably an SVG file
+	if (strings.HasPrefix(string(buffer), "<svg")) || strings.HasSuffix(r.URL.Path, ".svg") {
+		contentType = "image/svg+xml"
+	}
+
+	// Set the Content-Type header
+	w.Header().Set("Content-Type", contentType)
+
+	_, _ = w.Write(buffer)
 
 	_, _ = io.Copy(w, resp.Body)
 }
@@ -123,14 +174,9 @@ func getIP(r *http.Request) (string, error) {
 }
 
 func envPortOr(port string) string {
-  // If `PORT` variable in environment exists, return it
-  if envPort := os.Getenv("PORT"); envPort != "" {
-    return ":" + envPort
-  }
-  return ":" + port
-}
-
-func isPossiblyCID(possibleCID string) bool {
-	cidRegex := regexp.MustCompile(`Qm[1-9A-HJ-NP-Za-km-z]{44,}|b[A-Za-z2-7]{58,}|B[A-Z2-7]{58,}|z[1-9A-HJ-NP-Za-km-z]{48,}|F[0-9A-F]{50,}`)
-	return cidRegex.MatchString(possibleCID)
+	// If `PORT` variable in environment exists, return it
+	if envPort := os.Getenv("PORT"); envPort != "" {
+		return ":" + envPort
+	}
+	return ":" + port
 }
